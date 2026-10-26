@@ -1,0 +1,50 @@
+const assert = require('node:assert/strict');
+const { classify } = require('../extension/policy.js');
+const cases = [
+  ['https://www.youtube.com/', false],
+  ['https://m.youtube.com/', false],
+  ['https://www.youtube.com/feed/subscriptions', false],
+  ['https://www.youtube.com/feed/trending', false],
+  ['https://www.youtube.com/shorts/abcdefghijk', false],
+  ['https://m.youtube.com/shorts/abcdefghijk', false],
+  ['https://www.youtube.com/feed/shorts', false],
+  ['https://www.youtube.com/@example/videos', false],
+  ['https://www.youtube.com/playlist?list=abc', false],
+  ['https://www.youtube.com/results', false],
+  ['https://www.youtube.com/results?search_query=%20', false],
+  ['https://www.youtube.com/results?search_query=linear+algebra', true],
+  ['https://www.youtube.com/watch?v=abcdefghijk', true],
+  ['https://www.youtube.com/watch?t=1&v=abc_def-123', true],
+  ['https://www.youtube.com/watch?v=too_short', false],
+  ['https://www.youtube.com/watch', false],
+  ['https://www.youtube-nocookie.com/embed/abcdefghijk', true],
+  ['https://www.youtube.com/embed/abcdefghijk?rel=0', true],
+  ['https://www.youtube.com/embed/', false],
+  ['https://youtu.be/abcdefghijk?t=12', true],
+  ['https://youtu.be/', false],
+  ['https://www.reddit.com/', false],
+  ['https://old.reddit.com/', false],
+  ['https://www.reddit.com/r/popular/', false],
+  ['https://www.reddit.com/r/all/', false],
+  ['https://www.reddit.com/r/learnpython/', false],
+  ['https://www.reddit.com/r/learnpython/new/', false],
+  ['https://www.reddit.com/search/?q=python', false],
+  ['https://www.reddit.com/user/person/', false],
+  ['https://www.reddit.com/r/learnpython/comments/abc123/title/', true],
+  ['https://old.reddit.com/r/learnpython/comments/abc123/title/comment123/', true],
+  ['https://www.reddit.com/comments/abc123/title/', true],
+  ['https://www.reddit.com/r/learnpython/comments/', false],
+  ['https://www.reddit.com/r/learnpython/comments/abc123', true],
+  ['https://www.reddit.com/r/learnpython/s/Abc123/', true],
+  ['https://redd.it/abc123', true],
+  ['https://redd.it/', false],
+  ['https://notreddit.com/', true],
+  ['https://youtube.com.example.org/', true],
+  ['https://google.com/search?q=reddit', true],
+  ['javascript:alert(1)', false],
+  ['not a URL', false]
+];
+for (const [url, allowed] of cases) assert.equal(classify(url).allowed, allowed, url);
+assert.equal(classify('https://youtube.com/watch?v=abcdefghijk').kind, 'video');
+assert.equal(classify('https://reddit.com/r/test/comments/abc123/title/').kind, 'thread');
+console.log(`${cases.length} route cases passed.`);

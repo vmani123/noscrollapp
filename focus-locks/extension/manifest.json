@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Intentional Browsing",
+  "version": "0.3.1",
+  "description": "Keep deliberate YouTube/Reddit use; unlock LinkedIn briefly for new notifications.",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://*.youtube-nocookie.com/*",
+        "*://youtu.be/*",
+        "*://*.reddit.com/*",
+        "*://redd.it/*"
+      ],
+      "js": [
+        "policy.js",
+        "content.js"
+      ],
+      "css": [
+        "focus.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "*://*.linkedin.com/*"
+      ],
+      "js": [
+        "linkedin-policy.js",
+        "linkedin.js"
+      ],
+      "css": [
+        "linkedin.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "minimum_chrome_version": "120",
+  "permissions": [
+    "nativeMessaging",
+    "alarms",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "*://*.youtube-nocookie.com/*",
+    "*://youtu.be/*",
+    "*://*.reddit.com/*",
+    "*://redd.it/*",
+    "*://*.linkedin.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "incognito": "spanning"
+}

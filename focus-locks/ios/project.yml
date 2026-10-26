@@ -1,0 +1,100 @@
+name: LockedBlocks
+options:
+  bundleIdPrefix: com.local.lockedblocks
+  deploymentTarget:
+    iOS: "17.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: "56WAMB9G5M"
+    TARGETED_DEVICE_FAMILY: "1"
+schemes:
+  LockedBlocks:
+    build:
+      targets:
+        LockedBlocks: all
+    run:
+      config: Debug
+    profile:
+      config: Release
+    archive:
+      config: Release
+targets:
+  LockedBlocks:
+    type: application
+    platform: iOS
+    sources: [App, Shared]
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Locked Blocks
+        CFBundleVersion: "3"
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
+    entitlements:
+      path: App/LockedBlocks.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups: [group.com.local.lockedblocks]
+    dependencies:
+      - target: BlockMonitor
+      - target: BlockShield
+      - target: BlockShieldAction
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.lockedblocks.app
+  BlockMonitor:
+    type: app-extension
+    platform: iOS
+    sources: [Monitor, Shared]
+    info:
+      path: Monitor/Info.plist
+      properties:
+        CFBundleVersion: "3"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).BlockMonitor
+    entitlements:
+      path: Monitor/BlockMonitor.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups: [group.com.local.lockedblocks]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.lockedblocks.app.monitor
+  BlockShield:
+    type: app-extension
+    platform: iOS
+    sources: [ShieldUI]
+    info:
+      path: ShieldUI/Info.plist
+      properties:
+        CFBundleVersion: "3"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).BlockShield
+    entitlements:
+      path: ShieldUI/BlockShield.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.lockedblocks.app.shield
+  BlockShieldAction:
+    type: app-extension
+    platform: iOS
+    sources: [ShieldAction]
+    info:
+      path: ShieldAction/Info.plist
+      properties:
+        CFBundleVersion: "3"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettings.shield-action-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).BlockShieldAction
+    entitlements:
+      path: ShieldAction/BlockShieldAction.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.local.lockedblocks.app.action

@@ -1,0 +1,7 @@
+reddit.com/r/*/comments/*
+reddit.com/comments/*
+reddit.com/r/*/s/*
+youtube.com/watch?*v=*
+youtube.com/results?*search_query=*
+youtube.com/embed/*
+youtube-nocookie.com/embed/*

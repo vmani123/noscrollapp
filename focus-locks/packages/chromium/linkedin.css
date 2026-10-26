@@ -1,0 +1,33 @@
+/* Keep LinkedIn hidden until a notification check grants this visit. */
+html:not([data-intentional-linkedin-allowed="true"]) body {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+html:not([data-intentional-linkedin-allowed="true"]) { overflow: hidden !important; }
+#intentional-linkedin-gate {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  display: grid !important;
+  place-items: center !important;
+  background: #101918 !important;
+  color: #f2f5ef !important;
+  padding: 32px !important;
+  font: 17px/1.6 system-ui, sans-serif !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+#intentional-linkedin-gate section { max-width: 520px; }
+#intentional-linkedin-gate button, #intentional-linkedin-gate a {
+  display: inline-block; margin: 8px 12px 0 0; padding: 10px 16px;
+  border: 1px solid #73968d; border-radius: 8px; background: #1d3430;
+  color: #f2f5ef; font: inherit; text-decoration: none; cursor: pointer;
+}
+#intentional-linkedin-status {
+  position: fixed !important; bottom: 16px !important; left: 16px !important;
+  z-index: 2147483647 !important; padding: 10px 16px !important;
+  border-radius: 10px !important; background: #101918 !important;
+  color: #f2f5ef !important; font: 14px/1.5 system-ui, sans-serif !important;
+}
+#intentional-linkedin-status a { color: #b5e4d6; margin-left: 12px; }
+#intentional-linkedin-gate[hidden], #intentional-linkedin-status[hidden] { display: none !important; }

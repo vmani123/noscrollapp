@@ -1,0 +1,24 @@
+# Separate local dashboard; not part of the NoScroll blocker project.
+/control-room/
+
+# Local metadata and generated native applications.
+.DS_Store
+**/build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcarchive/
+*.xcresult/
+*.dSYM/
+__pycache__/
+*.pyc
+
+# Signing material and device-specific installation packages stay local.
+*.mobileprovision
+*.provisionprofile
+*.p12
+*.p8
+*.ipa
+.env
+.env.*
+!.env.example

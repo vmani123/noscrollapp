@@ -1,0 +1,58 @@
+/* Hide the page before route validation. This also covers direct feed visits. */
+html:not([data-intentional-allowed="true"]) body > :not(#intentional-browsing-shield) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+html[data-intentional-blocked="true"] { overflow: hidden !important; }
+
+/* YouTube: keep the player, title, description, chapters, and useful comments. */
+ytd-watch-next-secondary-results-renderer,
+ytd-playlist-panel-renderer, ytm-playlist-panel-renderer,
+ytd-shelf-renderer,
+ytd-watch-flexy #related,
+ytd-reel-shelf-renderer, ytd-reel-item-renderer,
+ytm-reel-shelf-renderer, ytm-reel-item-renderer,
+ytd-shorts, ytm-shorts-lockup-view-model, yt-shorts-lockup-view-model,
+ytm-shorts-lockup-view-model-v2, yt-shorts-lockup-view-model-v2,
+ytd-rich-section-renderer,
+ytd-secondary-search-container-renderer,
+ytd-reel-player-overlay-renderer,
+ytm-item-section-renderer[section-identifier="related-items"],
+ytm-watch-next-results-renderer .watch-next-feed,
+.ytp-endscreen-content, .ytp-ce-element,
+.ytp-autonav-endscreen-upnext-container,
+.ytp-next-button,
+a[href^="/shorts"], a[href*="youtube.com/shorts"],
+ytd-guide-renderer, ytd-mini-guide-renderer,
+ytm-pivot-bar-renderer,
+ytm-autonav-toggle-renderer {
+  display: none !important;
+}
+
+/* Reddit: keep the selected post and its comment tree, remove discovery. */
+shreddit-recommendation-feed,
+shreddit-feed,
+shreddit-gallery-carousel[slot="recommendations"],
+shreddit-sidebar,
+#right-sidebar-container,
+#left-sidebar-container,
+shreddit-post-recommendations,
+[data-testid="related-posts"],
+[data-testid="post-recommendations"],
+.side, .listing-chooser, .footer-parent {
+  display: none !important;
+}
+#intentional-browsing-shield {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483647 !important;
+  display: grid !important;
+  place-items: center !important;
+  background: #101918 !important;
+  color: #f2f5ef !important;
+  padding: 32px !important;
+  font: 17px/1.6 system-ui, sans-serif !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+#intentional-browsing-shield[hidden] { display: none !important; }
