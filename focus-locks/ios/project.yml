@@ -28,7 +28,7 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: Locked Blocks
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         UILaunchScreen: {}
         UIRequiresFullScreen: true
     entitlements:
@@ -50,7 +50,7 @@ targets:
     info:
       path: Monitor/Info.plist
       properties:
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.deviceactivity.monitor-extension
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).BlockMonitor
@@ -69,7 +69,7 @@ targets:
     info:
       path: ShieldUI/Info.plist
       properties:
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration-service
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).BlockShield
@@ -87,7 +87,7 @@ targets:
     info:
       path: ShieldAction/Info.plist
       properties:
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.ManagedSettings.shield-action-service
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).BlockShieldAction

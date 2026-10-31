@@ -25,11 +25,11 @@ struct ContentView: View {
                     if let error = model.error { Text(error).foregroundStyle(.red) }
                 }
                 Section("Blocked apps and sites") {
-                    Button("Core: choose Instagram and TikTok apps") { chooseCore = true }
+                    Button("Core: choose additional apps") { chooseCore = true }
                         .disabled(model.profilesLocked || model.authorization != .approved)
                     Text("Core selection: \(model.core.applicationTokens.count) apps, \(model.core.categoryTokens.count) categories, \(model.core.webDomainTokens.count) websites")
                         .font(.footnote).foregroundStyle(.secondary)
-                    Text("Instagram and TikTok websites are included. Select their native apps above.")
+                    Text("Threads and Facebook are included automatically: their apps are hidden during active Core and Extra blocks, and their websites are blocked. Instagram and TikTok websites are also included; select their native apps above.")
                         .font(.footnote).foregroundStyle(.secondary)
                     Button("Extra: choose YouTube and additional apps") { chooseExtra = true }
                         .disabled(model.profilesLocked || model.authorization != .approved)

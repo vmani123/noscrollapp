@@ -1,5 +1,7 @@
 # NoScroll
 
+**Perry customization (`codex/perry`):** iPhone Core/Extra add Threads and Facebook; Chrome fully blocks Threads and adds Bilibili feed/playback restrictions alongside the YouTube/Reddit rules. Follow [Perry’s setup guide](PERRY-SETUP.md).
+
 Tools for deliberate browsing on a Mac and timed app/website blocking on an iPhone.
 
 The project source and configurations are in [`focus-locks/`](focus-locks/). These are local prototypes: working blocking behavior has been reported on the iPhone, but unattended expiry, restarts, long blocks, and coverage across browsers still need verification. The Mac guard is a per-user companion, not an owner-proof security boundary.
@@ -49,6 +51,7 @@ Run these from the repository root:
 
 ```sh
 node focus-locks/tests/policy.test.cjs
+node focus-locks/tests/content-playback.test.cjs
 node focus-locks/tests/guard-background.test.cjs
 node focus-locks/tests/linkedin.test.cjs
 

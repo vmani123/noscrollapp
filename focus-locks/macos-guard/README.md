@@ -1,5 +1,7 @@
 # Chrome extension guard for macOS
 
+**Perry branch:** Chrome also blocks Threads completely. Grant Threads and Bilibili site access and the network-blocking permission when loading extension 0.3.2. See [Perry setup](../../PERRY-SETUP.md) for installation on another Mac. The status below describes the original development Mac.
+
 This is an independent implementation of the browser-closing behavior requested. It does not use Cold Turkey's code or change Cold Turkey's configuration.
 
 Status on this Mac: **installed and enforcing**, with healthy extension connections in both active Chrome profiles. The `IB` menu-bar item shows current protection status.

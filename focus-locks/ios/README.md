@@ -1,5 +1,7 @@
 # Locked Blocks for iPhone
 
+**Perry branch, build 4:** Core and Extra now automatically include the native Threads and Facebook apps and their web domains, in addition to the existing Core defaults. See [Perry setup](../../PERRY-SETUP.md) for current installation instructions. The installation history below describes the original device, not Perry’s phone.
+
 This is a native Screen Time blocker prototype, not a mockup. On October 15, 2026, the app and all three extensions were development-signed using Xcode 16.2 and installed on VikPhone (iPhone 17 Pro, iOS 26.6.1) through the USB installation-proxy service. The phone independently reports `com.local.lockedblocks.app` version 1.0 (1) as installed. **First launch, Screen Time authorization, blocking, and expiry still require physical-device testing.**
 
 Source update, October 16, 2026: new blocks default to **1 hour, 0 minutes, 0 seconds**. Duration uses three scrolling wheels for hours/minutes/seconds, opened from the Duration button, with a Done button. The allowed total is 1 second to 7 days. New app downloads are allowed during a block. These source changes require rebuilding and updating the installed phone app; open the updated app once so reconciliation clears any installation restriction left by the previous version, including for an already-active block. Other Screen Time controls can still restrict downloads.
@@ -17,7 +19,7 @@ Update installed October 16, 2026: **version 1.0 (3)** replaces typed duration f
 * Union of overlapping blocks: the end of one does not remove another active block.
 * Device Activity extension applies restrictions at the scheduled start and recomputes them at the end, even while the app is closed. Opening the app also reconciles the current policy. Callback delivery and timing must be tested on the target iOS version.
 * Active blocks set `denyAppRemoval`, which requests blocking deletion of **all apps**, not just this app. They clear this app's `denyAppInstallation` setting so new apps can be downloaded, and still require automatic date/time.
-* Core defaults: Instagram and TikTok web domains. Extra adds Reddit and all YouTube web domains and always blocks the native Reddit app (`com.reddit.Reddit`) using Managed Settings' built-in application block list. iOS hides that app while Extra is active. Other native apps, including YouTube, are selected through the picker.
+* Core defaults: Instagram, TikTok, Threads, and Facebook web domains. Threads and Facebook native apps are automatically blocked (hidden) during Core and Extra windows. Extra adds Reddit and all YouTube web domains and always blocks the native Reddit app (`com.reddit.Reddit`) using Managed Settings' built-in application block list. iOS hides that app while Extra is active. Other native apps, including YouTube, are selected through the picker.
 * Shield buttons only close the blocked app/site.
 * Atomic local persistence shared with the monitor, and a cross-process file lock around policy changes. An unreadable state does not silently clear an existing policy.
 

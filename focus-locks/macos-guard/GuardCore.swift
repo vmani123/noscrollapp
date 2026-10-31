@@ -29,11 +29,11 @@ enum GuardPolicy {
         let live = reports.filter {
             $0.browserPID == browser.pid && $0.uptime <= now &&
             now - $0.uptime <= heartbeatLifetime && hostAlive($0.hostPID) &&
-            $0.windows >= 0 && $0.windows <= 10000 && ["0.2.0", "0.3.0", "0.3.1"].contains($0.version)
+            $0.windows >= 0 && $0.windows <= 10000 && $0.version == "0.3.2"
         }
         guard !live.isEmpty else { return "The extension is missing, disabled, or not responding." }
         guard live.allSatisfy({ $0.siteAccess }) else {
-            return "Allow the extension to run on all its requested sites, including LinkedIn."
+            return "Allow all requested sites, including Threads and LinkedIn, and the extension's network-blocking permission."
         }
         guard live.allSatisfy({ $0.incognito }) else {
             return "Enable Allow in Incognito for the extension in every open profile."

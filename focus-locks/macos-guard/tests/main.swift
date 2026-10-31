@@ -6,7 +6,7 @@ func check(_ condition: Bool, _ label: String) {
     if !condition { fatalError("FAIL: \(label)") }
 }
 func health(pid: Int32 = 5, host: Int32 = 7, time: Double = 100, windows: Int = 1,
-            site: Bool = true, incognito: Bool = true, version: String = "0.2.0") -> Health {
+            site: Bool = true, incognito: Bool = true, version: String = "0.3.2") -> Health {
     Health(hostPID: host, browserPID: pid, session: "session", uptime: time,
            windows: windows, siteAccess: site, incognito: incognito, version: version)
 }
@@ -23,8 +23,8 @@ check(problem([health(pid: 6)]) != nil, "other browser process is not coverage")
 check(problem([health(site: false)]) != nil, "revoked site access")
 check(problem([health(incognito: false)]) != nil, "private access required")
 check(problem([health(version: "0.1.0")]) != nil, "old extension rejected")
-check(problem([health(version: "0.3.0")]) == nil, "LinkedIn-enabled extension accepted")
-check(problem([health(version: "0.3.1")]) == nil, "LinkedIn message/connection update accepted")
+check(problem([health(version: "0.3.0")]) != nil, "extension without Threads protection rejected")
+check(problem([health(version: "0.3.1")]) != nil, "previous main extension rejected for Perry")
 check(problem([health()], windows: nil) != nil, "failed OS window query")
 check(problem([health()], windows: 2) != nil, "second unprotected profile")
 check(problem([health(), health(host: 8)], windows: 2) == nil, "two protected profiles")

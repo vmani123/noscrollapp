@@ -17,7 +17,8 @@
           const manifest = chrome.runtime.getManifest();
           const [windows, siteAccess, incognito] = await Promise.all([
             chrome.windows.getAll({windowTypes: ['normal', 'popup']}),
-            chrome.permissions.contains({origins: manifest.host_permissions}),
+            chrome.permissions.contains({origins: manifest.host_permissions,
+              permissions: ['declarativeNetRequest']}),
             chrome.extension.isAllowedIncognitoAccess()
           ]);
           if (port !== connection) return;

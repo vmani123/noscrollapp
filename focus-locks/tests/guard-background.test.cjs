@@ -30,7 +30,10 @@ async function run() {
       // Intentionally include private windows; no URLs or titles should be reported.
       return [{id: 1, incognito: false}, {id: 2, incognito: true}];
     }},
-    permissions: {contains: async () => siteAccess},
+    permissions: {contains: async request => {
+      assert.equal(request.permissions.includes('declarativeNetRequest'), true);
+      return siteAccess;
+    }},
     extension: {isAllowedIncognitoAccess: async () => incognito},
     alarms: {create: () => {}, onAlarm: event()}
   };

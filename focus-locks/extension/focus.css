@@ -42,6 +42,17 @@ shreddit-post-recommendations,
 .side, .listing-chooser, .footer-parent {
   display: none !important;
 }
+/* Bilibili video pages: retain the requested player/comments, remove discovery
+   and next-video controls. Scope these selectors so search results stay usable. */
+html[data-intentional-site="bilibili"][data-intentional-kind="video"] :is(
+  .recommend-list-v1, .rec-list, .video-page-card-small, .recommend-video,
+  .related-video, .video-sections-content-list, .next-play,
+  .bpx-player-ending-related, .bpx-player-ending-wrap, .bpx-player-ctrl-next,
+  .bilibili-player-video-btn-next, .bilibili-player-video-panel-ending,
+  .video-toolbar-right, .pop-live-small-mode
+) {
+  display: none !important;
+}
 #intentional-browsing-shield {
   position: fixed !important;
   inset: 0 !important;

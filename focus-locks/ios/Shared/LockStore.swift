@@ -149,7 +149,8 @@ enum LockStore {
             return
         }
         var selection = FamilyActivitySelection()
-        var domains: Set<WebDomain> = [WebDomain(domain: "instagram.com"), WebDomain(domain: "tiktok.com")]
+        var domains = Set(["instagram.com", "tiktok.com", "threads.com", "threads.net",
+                           "facebook.com", "fb.com", "fb.watch"].map { WebDomain(domain: $0) })
         for block in active {
             selection.applicationTokens.formUnion(block.selection.applicationTokens)
             selection.categoryTokens.formUnion(block.selection.categoryTokens)
@@ -165,11 +166,15 @@ enum LockStore {
         settings.shield.applicationCategories = selection.categoryTokens.isEmpty ? nil : .specific(selection.categoryTokens)
         settings.shield.webDomains = selection.webDomainTokens.isEmpty ? nil : selection.webDomainTokens
         settings.shield.webDomainCategories = selection.categoryTokens.isEmpty ? nil : .specific(selection.categoryTokens)
-        // Extra includes the native Reddit app independently of picker tokens.
-        // Recompute from all active blocks so overlapping windows keep protection,
-        // and clear this setting when only Core blocks remain.
-        settings.application.blockedApplications = active.contains { $0.mode == .extra }
-            ? [Application(bundleIdentifier: "com.reddit.Reddit")] : nil
+        // This friend's Core baseline includes Threads and Facebook without picker tokens.
+        // Extra inherits Core. Recompute the union so an overlapping Extra expiry
+        // removes Reddit while retaining Core apps until the last active block ends.
+        var blockedApps: Set<Application> = [Application(bundleIdentifier: "com.burbn.barcelona"),
+                                             Application(bundleIdentifier: "com.facebook.Facebook")]
+        if active.contains(where: { $0.mode == .extra }) {
+            blockedApps.insert(Application(bundleIdentifier: "com.reddit.Reddit"))
+        }
+        settings.application.blockedApplications = blockedApps
         settings.webContent.blockedByFilter = .specific(domains)
         settings.application.denyAppRemoval = true
         // Clear this app's previous installation restriction, including during

@@ -12,8 +12,12 @@
 
   function videoKey(raw) {
     const policy = IntentionalPolicy.classify(raw);
-    if (policy.site !== 'youtube' || policy.kind !== 'video') return null;
+    if (!['youtube', 'bilibili'].includes(policy.site) || policy.kind !== 'video') return null;
     const url = new URL(raw);
+    if (policy.site === 'bilibili') {
+      return 'bilibili:' + (url.pathname.startsWith('/video/') ? url.pathname.split('/')[2]
+        : url.searchParams.get('bvid') || url.searchParams.get('aid')) + ':' + (url.searchParams.get('p') || '1');
+    }
     return url.pathname === '/watch' ? url.searchParams.get('v') : url.pathname.split('/')[2];
   }
 
@@ -26,34 +30,40 @@
       const box = document.createElement('section');
       box.style.cssText = 'max-width:520px;width:100%';
       const title = document.createElement('h1');
-      title.textContent = 'Open something on purpose.';
+      title.textContent = policy.site === 'threads' ? 'Threads is blocked.' : 'Open something on purpose.';
       const description = document.createElement('p');
       description.textContent = policy.site === 'youtube'
         ? 'YouTube feeds and Shorts are blocked. Search for a topic or open a specific video.'
+        : policy.site === 'threads' ? 'Threads is fully blocked in this browser.'
+        : policy.site === 'bilibili' ? 'Bilibili feeds are blocked. Search for a topic or open a specific video.'
         : 'Reddit feeds are blocked. Open a specific post from your search results.';
       box.append(title, description);
-      const form = document.createElement('form');
-      const input = document.createElement('input');
-      input.required = true;
-      input.type = 'search';
-      input.placeholder = policy.site === 'youtube' ? 'What do you want to learn?' : 'Search Reddit posts';
-      input.setAttribute('aria-label', input.placeholder);
-      input.style.cssText = 'width:100%;box-sizing:border-box;padding:12px;border-radius:8px;font:inherit';
-      const button = document.createElement('button');
-      button.type = 'submit';
-      button.textContent = 'Search';
-      button.style.cssText = 'margin-top:12px;padding:10px 18px;border-radius:8px;font:inherit;cursor:pointer';
-      form.append(input, button);
-      form.addEventListener('submit', event => {
-        event.preventDefault();
-        const query = input.value.trim();
-        if (!query) return;
-        const target = policy.site === 'youtube'
-          ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query)
-          : 'https://www.google.com/search?q=' + encodeURIComponent('site:reddit.com/r/ ' + query);
-        location.assign(target);
-      });
-      box.append(form);
+      if (policy.site !== 'threads') {
+        const form = document.createElement('form');
+        const input = document.createElement('input');
+        input.required = true;
+        input.type = 'search';
+        input.placeholder = policy.site === 'youtube' ? 'What do you want to learn?'
+          : policy.site === 'bilibili' ? 'Search Bilibili videos' : 'Search Reddit posts';
+        input.setAttribute('aria-label', input.placeholder);
+        input.style.cssText = 'width:100%;box-sizing:border-box;padding:12px;border-radius:8px;font:inherit';
+        const button = document.createElement('button');
+        button.type = 'submit';
+        button.textContent = 'Search';
+        button.style.cssText = 'margin-top:12px;padding:10px 18px;border-radius:8px;font:inherit;cursor:pointer';
+        form.append(input, button);
+        form.addEventListener('submit', event => {
+          event.preventDefault();
+          const query = input.value.trim();
+          if (!query) return;
+          const target = policy.site === 'youtube'
+            ? 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query)
+            : policy.site === 'bilibili' ? 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(query)
+            : 'https://www.google.com/search?q=' + encodeURIComponent('site:reddit.com/r/ ' + query);
+          location.assign(target);
+        });
+        box.append(form);
+      }
       shield.append(box);
     }
     if (!shield.isConnected) document.documentElement.append(shield);
@@ -87,12 +97,13 @@
       if (!videoTargets.has(video)) {
         videoTargets.add(video);
         video.addEventListener('ended', () => {
-          if (initial.site === 'youtube') {
+          if (['youtube', 'bilibili'].includes(initial.site)) {
             finishedVideos.add(video);
             video.pause();
           }
         });
         video.addEventListener('play', () => {
+          if (initial.site === 'bilibili' && Date.now() - recentGesture > 1500) video.pause();
           if (initial.site === 'youtube' && finishedVideos.has(video)) {
             if (Date.now() - recentGesture > 1500) video.pause();
             else finishedVideos.delete(video);
@@ -113,6 +124,13 @@
         location.replace(url.href);
       }
     }
+    if (policy.site === 'bilibili' && policy.kind === 'video') {
+      const url = new URL(location.href);
+      if (url.hostname === 'player.bilibili.com' && url.searchParams.get('autoplay') !== '0') {
+        url.searchParams.set('autoplay', '0');
+        location.replace(url.href);
+      }
+    }
   }
 
   function inspect() {
@@ -128,6 +146,8 @@
     }
     document.documentElement.setAttribute('data-intentional-allowed', String(policy.allowed));
     document.documentElement.setAttribute('data-intentional-blocked', String(!policy.allowed));
+    document.documentElement.setAttribute('data-intentional-site', policy.site || '');
+    document.documentElement.setAttribute('data-intentional-kind', policy.kind || '');
     if (!policy.allowed) showShield(policy);
     else if (shield) shield.hidden = true;
     protectPlayback(policy);
@@ -156,6 +176,9 @@
   document.addEventListener('play', () => {
     const policy = IntentionalPolicy.classify(location.href);
     if (!policy.allowed) protectPlayback(policy);
+    if (initial.site === 'bilibili' && Date.now() - recentGesture > 1500) {
+      document.querySelectorAll('video').forEach(video => video.pause());
+    }
   }, true);
   new MutationObserver(schedule).observe(document.documentElement, {childList: true, subtree: true});
   document.addEventListener('yt-navigate-finish', inspect);

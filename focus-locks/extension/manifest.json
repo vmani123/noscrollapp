@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Intentional Browsing",
-  "version": "0.3.1",
-  "description": "Keep deliberate YouTube/Reddit use; unlock LinkedIn briefly for new notifications.",
+  "version": "0.3.2",
+  "description": "Perry: block Threads and feeds on YouTube, Reddit, and Bilibili; gate LinkedIn notifications.",
   "content_scripts": [
     {
       "matches": [
@@ -10,7 +10,11 @@
         "*://*.youtube-nocookie.com/*",
         "*://youtu.be/*",
         "*://*.reddit.com/*",
-        "*://redd.it/*"
+        "*://redd.it/*",
+        "*://*.threads.com/*",
+        "*://*.threads.net/*",
+        "*://*.bilibili.com/*",
+        "*://b23.tv/*"
       ],
       "js": [
         "policy.js",
@@ -41,7 +45,8 @@
   "permissions": [
     "nativeMessaging",
     "alarms",
-    "storage"
+    "storage",
+    "declarativeNetRequest"
   ],
   "host_permissions": [
     "*://*.youtube.com/*",
@@ -49,10 +54,17 @@
     "*://youtu.be/*",
     "*://*.reddit.com/*",
     "*://redd.it/*",
-    "*://*.linkedin.com/*"
+    "*://*.linkedin.com/*",
+    "*://*.threads.com/*",
+    "*://*.threads.net/*",
+    "*://*.bilibili.com/*",
+    "*://b23.tv/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "incognito": "spanning"
+  "incognito": "spanning",
+  "declarative_net_request": {
+    "rule_resources": [{"id": "threads", "enabled": true, "path": "threads-rules.json"}]
+  }
 }

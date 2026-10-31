@@ -17,7 +17,7 @@ for browser in ('chromium', 'firefox'):
     if browser == 'firefox':
         manifest = json.loads((target / 'manifest.json').read_text())
         # The native guard currently supports Google Chrome on macOS only.
-        for key in ('background', 'key', 'minimum_chrome_version', 'permissions', 'host_permissions', 'incognito'):
+        for key in ('background', 'key', 'minimum_chrome_version', 'permissions', 'host_permissions', 'incognito', 'declarative_net_request'):
             manifest.pop(key, None)
         manifest['permissions'] = ['storage']
         manifest['background'] = {'scripts': ['linkedin-policy.js', 'linkedin-background.js']}
