@@ -23,7 +23,13 @@ native = home / 'Library' / 'Application Support' / 'Google' / 'Chrome' / 'Nativ
 domain = f'gui/{os.getuid()}'
 
 if not args.uninstall:
-    subprocess.run([sys.executable, str(root / 'build.py')], check=True)
+    print('Building the guard before changing its installation...', flush=True)
+    try:
+        subprocess.run([sys.executable, '-u', str(root / 'build.py')], check=True, timeout=400)
+    except subprocess.TimeoutExpired:
+        sys.exit('The build did not finish within 400s. The installed guard has not been replaced.')
+    except subprocess.CalledProcessError:
+        sys.exit('Build failed. The installed guard has not been replaced. See the error above.')
     if not args.observe:
         try:
             status = json.loads((home / 'Library/Application Support/Intentional Browsing Guard/status.json').read_text())
@@ -34,11 +40,20 @@ if not args.uninstall:
         except (OSError, ValueError, KeyError) as error:
             sys.exit(f'Not enabling closure: {error}\nRun install.py --observe, reload the extension in each profile, and check the IB status first.')
 # Boot out only this guard, never another blocker or Chrome itself.
-subprocess.run(['/bin/launchctl', 'bootout', f'{domain}/{label}'],
-               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-for _ in range(40):
-    unloaded = subprocess.run(['/bin/launchctl', 'print', f'{domain}/{label}'],
-                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+print('Stopping the previous guard (up to 30 seconds)...', flush=True)
+try:
+    subprocess.run(['/bin/launchctl', 'bootout', f'{domain}/{label}'], timeout=30,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+except subprocess.TimeoutExpired:
+    sys.exit('Timed out stopping the old guard. Its app was not replaced. '
+             'The stop may still have taken effect; retry after a few seconds.')
+stop_deadline = time.monotonic() + 10
+while time.monotonic() < stop_deadline:
+    try:
+        unloaded = subprocess.run(['/bin/launchctl', 'print', f'{domain}/{label}'], timeout=3,
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except subprocess.TimeoutExpired:
+        sys.exit('Timed out checking whether the old guard stopped. Its app was not replaced.')
     if unloaded.returncode != 0:
         break
     time.sleep(0.25)
@@ -53,6 +68,7 @@ if args.uninstall:
     sys.exit(0)
 
 source = root.parent / 'build' / 'macos-guard' / app.name
+print('Installing the app and registering Chrome native messaging...', flush=True)
 app.parent.mkdir(parents=True, exist_ok=True)
 if app.exists():
     shutil.rmtree(app)
@@ -73,10 +89,17 @@ agent.write_bytes(plistlib.dumps({
     'LimitLoadToSessionType': 'Aqua',
     'ProcessType': 'Interactive',
 }))
-for _ in range(10):
-    started = subprocess.run(['/bin/launchctl', 'bootstrap', domain, str(agent)], capture_output=True, text=True)
+print('Starting the guard in observation mode...' if args.observe else 'Starting the guard in enforcement mode...', flush=True)
+for attempt in range(1, 4):
+    try:
+        started = subprocess.run(['/bin/launchctl', 'bootstrap', domain, str(agent)],
+                                 capture_output=True, text=True, timeout=10)
+    except subprocess.TimeoutExpired:
+        sys.exit('Timed out starting the guard. It may still have started; '
+                 f'check its status with "{binary}" --status before retrying.')
     if started.returncode == 0:
         break
+    print(f'Start attempt {attempt}/3 failed: {started.stderr.strip()}', flush=True)
     time.sleep(0.5)
 else:
     sys.exit(f'Could not start the guard: {started.stderr.strip()}')

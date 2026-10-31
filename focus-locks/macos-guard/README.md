@@ -31,6 +31,38 @@ The installer only changes this guard's own app, launch agent, and native-host r
 
 The extension ID is derived from the exact unpacked package directory. Keep that folder in place. Rebuild/reinstall the guard if the repository is moved; an extension loaded from another directory won't match the registered native host. The installed app is locally ad-hoc signed, not notarized or an App Store release.
 
+## Setup appears silent or fails to compile
+
+The installer builds Swift before changing the installed guard. A cold compile
+can take several minutes. Updated scripts print each stage immediately and bound
+the compiler (300 seconds), signing/verification (30 seconds each), and launchd
+operations. A failed build leaves the installed app in place; it has not switched
+an existing enforcing guard to observation mode. A timed-out launchd operation
+may still have taken effect; check status before retrying.
+
+If the error includes `CarbonCore/Folders.h file not found`, `could not build
+module AppKit`, or `this SDK is not supported by the compiler`, repair the
+selected Apple toolchain. The build now checks for the missing CarbonCore header
+before compilation. This is an Apple SDK installation problem; changing Python
+versions does not repair missing SDK headers.
+
+1. On the affected Mac, open **System Settings → General → Software Update** and
+   install an offered **Command Line Tools for Xcode** update compatible with its
+   current macOS. Alternatively, download and reinstall a compatible Command Line
+   Tools package from [Apple's developer downloads](https://developer.apple.com/download/all/).
+   Full Xcode is not required for this guard. See [Apple's installation and update instructions](https://developer.apple.com/documentation/xcode/installing-the-command-line-tools/).
+2. If selecting the standalone Command Line Tools, run
+   `sudo xcode-select --switch /Library/Developer/CommandLineTools` after installation.
+   For a full Xcode installation, select its `Contents/Developer` directory instead.
+3. Run `xcrun swiftc --version` and `xcrun --sdk macosx --show-sdk-path`, then retry
+   `python3 -u focus-locks/macos-guard/install.py --observe` from the repository root.
+   Keep observation mode until the IB status reports healthy.
+
+If no compatible update is offered, collect `sw_vers -productVersion`,
+`xcode-select -p`, and `pkgutil --pkg-info=com.apple.pkg.CLTools_Executables` to
+choose the appropriate Apple installer. Repeatedly rerunning the guard build
+does not repair a broken SDK.
+
 ## Scope and limits
 
 **This is a per-user Chrome guard, not a tamper-proof timed lock.** A user who deliberately removes its login agent or edits its files can defeat it; the installer includes `--uninstall` for removal. Launchd restart handles ordinary process exits, not every deliberate attack. It does not implement Cold Turkey's protected uninstaller, installer blocking, time-change blocking, or Activity Monitor blocking. The local heartbeat files are not an administrator security boundary. The native host is restricted to this extension ID and accepts no web/HTTP connections, but a local user can modify/spoof user-owned files or invoke modified software.

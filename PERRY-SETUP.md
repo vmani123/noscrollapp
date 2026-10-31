@@ -79,4 +79,9 @@ Keep the friend on this branch and use `git pull --ff-only`. After browser chang
 
 ## Validation of this branch
 
+If guard setup appears silent or reports a missing `CarbonCore/Folders.h` header
+or a Swift compiler/SDK mismatch, see [guard setup troubleshooting](focus-locks/macos-guard/README.md#setup-appears-silent-or-fails-to-compile).
+The updated installer reports progress and time limits; the Apple tools still
+need updating or reinstalling on the affected Mac.
+
 Unsigned iPhone build 4 and all three extensions compiled successfully. The 82 URL policy cases, Bilibili playback/automatic-navigation checks, existing LinkedIn and native worker checks, 32 guard policy checks, and iPhone duration/boundary tests passed. Browser packages were regenerated from source. These checks do not verify current live Bilibili layouts or enforcement on Perry’s hardware; perform the installation checks above, including ordinary/private browsing and expiry on the phone.
