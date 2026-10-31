@@ -9,6 +9,9 @@
     const host = url.hostname.toLowerCase();
     const path = url.pathname;
     if (!['http:', 'https:'].includes(url.protocol)) return { site: null, allowed: false };
+    if (['instagram.com', 'instagr.am', 'cdninstagram.com', 'ig.me'].some(domain => hostIs(host, domain))) {
+      return { site: 'instagram', allowed: false, kind: 'blocked' };
+    }
     if (hostIs(host, 'threads.com') || hostIs(host, 'threads.net')) {
       return { site: 'threads', allowed: false, kind: 'blocked' };
     }

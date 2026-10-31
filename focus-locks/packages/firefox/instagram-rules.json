@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {"type": "block"},
+    "condition": {
+      "requestDomains": ["instagram.com", "instagr.am", "cdninstagram.com", "ig.me"],
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {"type": "block"},
+    "condition": {
+      "requestDomains": ["instagram.com", "instagr.am", "cdninstagram.com", "ig.me"]
+    }
+  }
+]

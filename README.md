@@ -1,6 +1,6 @@
 # NoScroll
 
-**Perry customization (`codex/perry`):** iPhone Core/Extra add Threads and Facebook; Chrome fully blocks Threads and adds Bilibili feed/playback restrictions alongside the YouTube/Reddit rules. Follow [Perry’s setup guide](PERRY-SETUP.md).
+**Perry customization (`codex/perry`):** iPhone Core/Extra add Threads and Facebook; Chrome always blocks Instagram and Threads and adds Bilibili feed/playback restrictions alongside the YouTube/Reddit rules. Follow [Perry’s setup guide](PERRY-SETUP.md).
 
 Tools for deliberate browsing on a Mac and timed app/website blocking on an iPhone.
 

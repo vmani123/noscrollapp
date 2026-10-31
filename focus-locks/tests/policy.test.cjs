@@ -1,6 +1,20 @@
 const assert = require('node:assert/strict');
 const { classify } = require('../extension/policy.js');
 const cases = [
+  ['https://instagram.com/', false],
+  ['https://www.instagram.com/reels/', false],
+  ['https://www.instagram.com/p/ExamplePost/', false],
+  ['https://www.instagram.com/direct/inbox/', false],
+  ['https://www.instagram.com/someone/', false],
+  ['https://www.instagram.com/p/ExamplePost/embed/', false],
+  ['http://m.instagram.com/', false],
+  ['https://i.instagram.com/api/v1/feed/', false],
+  ['https://instagr.am/p/example/', false],
+  ['https://scontent.cdninstagram.com/image.jpg', false],
+  ['https://ig.me/m/someone', false],
+  ['https://instagram.com.example.org/', true],
+  ['https://notinstagram.com/', true],
+  ['https://example.org/?url=https://instagram.com/', true],
   ['https://www.bilibili.com/', false],
   ['https://m.bilibili.com/', false],
   ['https://t.bilibili.com/', false],

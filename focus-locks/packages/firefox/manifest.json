@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Intentional Browsing",
-  "version": "0.3.2",
-  "description": "Perry: block Threads and feeds on YouTube, Reddit, and Bilibili; gate LinkedIn notifications.",
+  "version": "0.3.3",
+  "description": "Perry: always block Instagram and Threads; restrict YouTube, Reddit, and Bilibili feeds; gate LinkedIn.",
   "content_scripts": [
     {
       "matches": [
@@ -14,7 +14,11 @@
         "*://*.threads.com/*",
         "*://*.threads.net/*",
         "*://*.bilibili.com/*",
-        "*://b23.tv/*"
+        "*://b23.tv/*",
+        "*://*.instagram.com/*",
+        "*://*.instagr.am/*",
+        "*://*.cdninstagram.com/*",
+        "*://*.ig.me/*"
       ],
       "js": [
         "policy.js",

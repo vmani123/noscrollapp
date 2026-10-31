@@ -30,15 +30,17 @@
       const box = document.createElement('section');
       box.style.cssText = 'max-width:520px;width:100%';
       const title = document.createElement('h1');
-      title.textContent = policy.site === 'threads' ? 'Threads is blocked.' : 'Open something on purpose.';
+      title.textContent = policy.site === 'instagram' ? 'Instagram is blocked.'
+        : policy.site === 'threads' ? 'Threads is blocked.' : 'Open something on purpose.';
       const description = document.createElement('p');
       description.textContent = policy.site === 'youtube'
         ? 'YouTube feeds and Shorts are blocked. Search for a topic or open a specific video.'
+        : policy.site === 'instagram' ? 'Instagram is always blocked in this browser.'
         : policy.site === 'threads' ? 'Threads is fully blocked in this browser.'
         : policy.site === 'bilibili' ? 'Bilibili feeds are blocked. Search for a topic or open a specific video.'
         : 'Reddit feeds are blocked. Open a specific post from your search results.';
       box.append(title, description);
-      if (policy.site !== 'threads') {
+      if (!['threads', 'instagram'].includes(policy.site)) {
         const form = document.createElement('form');
         const input = document.createElement('input');
         input.required = true;
